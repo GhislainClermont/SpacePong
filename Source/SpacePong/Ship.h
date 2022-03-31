@@ -17,8 +17,7 @@ public:
 
 	void Move(float Direction);
 
-	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	class UProjectileMovementComponent* MovementComponent;
+	
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,6 +35,8 @@ private:
 	class UBoxComponent* Root;
 	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	class UFloatingPawnMovement* FloatingMovementComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Ship Stats")
 	float MoveSpeed = 200.f;

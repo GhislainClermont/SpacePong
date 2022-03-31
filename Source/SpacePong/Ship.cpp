@@ -5,7 +5,7 @@
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
 
 // Sets default values
 AShip::AShip()
@@ -18,11 +18,11 @@ AShip::AShip()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
-	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement Component"));
-	MovementComponent->SetUpdatedComponent(Root);
-	MovementComponent->MaxSpeed = MoveSpeed;	
-	MovementComponent->InitialSpeed = 0.f;
-	MovementComponent->ProjectileGravityScale = 0.f;
+	FloatingMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement Component"));
+	FloatingMovementComponent->SetUpdatedComponent(Root);
+	FloatingMovementComponent->MaxSpeed = MoveSpeed;
+	//FloatingMovementComponent->InitialSpeed = 0.f;
+	//FloatingMovementComponent->ProjectileGravityScale = 0.f;
 
 	//SpawnDefaultController();
 
@@ -39,24 +39,25 @@ void AShip::Move(float Direction)
 {
 	FVector DeltaLocation(0.f);
 	DeltaLocation.Y = Direction * MoveSpeed * GetWorld()->GetDeltaSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("Direction: %f, VelocitySize: %f"), Direction, MovementComponent->Velocity.Size());
-	//AddActorWorldOffset(DeltaLocation, true);
+	UE_LOG(LogTemp, Warning, TEXT("Direction: %f, VelocitySize: %f"), Direction, FloatingMovementComponent->Velocity.Size());
+	
 	//MovementComponent->AddInputVector(DeltaLocation * 100.f, true);
 	//AddMovementInput(DeltaLocation.GetSafeNormal(), MoveSpeed);
-	if (MovementComponent) {
-		if (FMath::Abs(Direction * MoveSpeed) >= MovementComponent->Velocity.Size()) {
-			MovementComponent->AddForce(DeltaLocation * MoveSpeed);
-			UE_LOG(LogTemp, Warning, TEXT("Increasing speed."));
-		}
-		else {
-			float NewVelocity = FMath::Max(FMath::Abs(Direction * MoveSpeed), MovementComponent->Velocity.Size() - DeltaLocation.Size() * MoveSpeed);
-			UE_LOG(LogTemp, Warning, TEXT("Decreasing speed. New Velocity = %f"), NewVelocity);
-			MovementComponent->SetVelocityInLocalSpace(MovementComponent->Velocity.GetSafeNormal() * NewVelocity);
-			//MovementComponent->LimitVelocity(FMath::Max(Direction * MoveSpeed, MovementComponent->Velocity.Size() - DeltaLocation.Size()));
-		}
-		
+	if (FloatingMovementComponent) {
+		AddActorWorldOffset(DeltaLocation, true);
+	//	if (FMath::Abs(Direction * MoveSpeed) >= MovementComponent->Velocity.Size()) {
+	//		MovementComponent->AddForce(DeltaLocation * MoveSpeed);
+	//		UE_LOG(LogTemp, Warning, TEXT("Increasing speed."));
+	//	}
+	//	else {
+	//		float NewVelocity = FMath::Max(FMath::Abs(Direction * MoveSpeed), MovementComponent->Velocity.Size() - DeltaLocation.Size() * MoveSpeed);
+	//		UE_LOG(LogTemp, Warning, TEXT("Decreasing speed. New Velocity = %f"), NewVelocity);
+	//		MovementComponent->SetVelocityInLocalSpace(-MovementComponent->Velocity.GetSafeNormal() * NewVelocity);
+	//		//MovementComponent->LimitVelocity(FMath::Max(Direction * MoveSpeed, MovementComponent->Velocity.Size() - DeltaLocation.Size()));
+	//	}
+	//	
 	}
-	else UE_LOG(LogTemp, Error, TEXT("ERROR! MovementComponent not found???????"));
+	//else UE_LOG(LogTemp, Error, TEXT("ERROR! MovementComponent not found???????"));
 }
 
 // Called every frame
